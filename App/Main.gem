@@ -1,0 +1,6 @@
+main()
+{
+	// GEM_STD_IO = SYSTEM_DEFAULT
+	print("Hello World!")
+}
+
