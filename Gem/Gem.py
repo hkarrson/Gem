@@ -4,9 +4,8 @@ import AST
 
 def main(argv):
     LexedSource = Lexer.LexerMain(argv)
-    for Token in LexedSource:
-        print(Token)
-    ASTInstance = AST.BuildAST(LexedSource)
+    if not LexedSource is None:
+        ASTInstance = AST.BuildAST(LexedSource)
     print(ASTInstance)
     
 if __name__== "__main__":

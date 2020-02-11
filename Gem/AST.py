@@ -26,6 +26,16 @@ class String(Node):
 class Return(Node):
     def __init__(self, expr):
         self.expr = expr
+class Head(Node):
+    def __init__(self, name, args):
+        self.name = name
+        self.args = args
+class Args(Node):
+    def __init__(self, lst):
+        self.lst = lst
+class Arg(Node):
+    def __init__(self, name):
+        self.name = name
 
 pg = ParserGenerator([
                        "STRING",
@@ -68,6 +78,22 @@ def expr_number(s):
 @pg.production("expr : STRING")
 def expr_string(s):
     return String(s[0].getstr()[1:-1])
+
+@pg.production("args : args COMMA arg")
+def args(s):
+    return Args(s[0].getastlist() + [s[2]])
+
+@pg.production("args : arg")
+def args_arg(s):
+    return Args([s[1]])
+
+@pg.production("arg : NAME")
+def arg(s):
+    return Arg([s[0].getstr()])
+
+@pg.production("head : NAME COMMA args METHOD")
+def head(s):
+    return Head(s[0].getstr(), s[2].getastlist())
 
 parser = pg.build()
 

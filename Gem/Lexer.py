@@ -22,24 +22,10 @@ def BuildLexer():
     return lg.build()
 
 def LexerMain(argv):    
-    LexedSource = []
+    LexedSource = None
     if (len(argv) > 0):            
         with open(argv[0]) as fp:
             LexerInstance = BuildLexer()
-            line = fp.readline()
-            while line:
-                if len(line.strip()) > 0:
-                    stream = LexerInstance.lex(line)
-                    token = None
-                    try:
-                        token = stream.next()
-                    except StopIteration:
-                        continue
-                    while not token is None:
-                        LexedSource.append(token)
-                        try:
-                            token = stream.next()
-                        except StopIteration:
-                            token = None
-                line = fp.readline()
+            src = fp.read()
+            LexedSource = LexerInstance.lex(src)
     return LexedSource;
