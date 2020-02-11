@@ -1,6 +1,19 @@
-main()
+main, args:
 {
-	// GEM_STD_IO = SYSTEM_DEFAULT
-	print("Hello World!")
+	return main2(args)
+}
+
+main1, void:
+{
+	print("Hello World!")	
+}
+	
+main2, args:
+{
+	for i = 0; i < 5; i++
+	{
+		print("Hello World!" + i)
+	}	
+	return 0
 }
 
