@@ -1,19 +1,24 @@
-main, args:
-{
-	return main2(args);
-}
+global User
 
-main1, void:
-{
-	print("Hello World!");
-}
+	hidden FullName = "John Q. Public";
+
+	global User(FullName)
+		this.FullName = FullName;
+	end
 	
-main2, args:
-{
-	for i = 0; i < 5; i++
-	{
-		print("Hello World!" + i);
-	}	
-	return 0;
-}
+	global GetName()
+		return FullName.words[0];
+	end
 
+end
+
+global PrintGreeting(To = User)
+	print("Good day, \To.GetName()!");
+end
+
+// Print a greeting message to the default user
+PrintGreeting();
+
+// Print a greeting message to a new user
+hidden Karrson = User("Karrson Heumann");
+PrintGreeting(Karrson);

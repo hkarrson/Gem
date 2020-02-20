@@ -91,9 +91,13 @@ def args_arg(s):
 def arg(s):
     return Arg([s[0].getstr()])
 
-@pg.production("head : NAME COMMA args METHOD")
+@pg.production("head : args METHOD")
 def head(s):
-    return Head(s[0].getstr(), s[2].getastlist())
+    return Head(s[0].getastlist()[0].getstr(), s[0].getastlist()[1:])
+
+@pg.production("return : RETURN expr SEMICOLON")
+def _return(s):
+    return Return(s[1])
 
 parser = pg.build()
 
