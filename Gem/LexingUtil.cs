@@ -80,6 +80,21 @@ namespace Gem
         {
             public string Name, Value;
             public List<Token> Children = new List<Token>();
+            public void Print()
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write("TOKEN");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("[");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+                Console.Write(Name);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(", ");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(Value);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write("] ");
+            }
         }
 
         public static List<Token> Pop()
