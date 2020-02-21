@@ -47,6 +47,10 @@
               "target": "Package",
               "version": "[1.1.13, )",
               "autoReferenced": true
+            },
+            "System.Xml.XmlSerializer": {
+              "target": "Package",
+              "version": "[4.3.0, )"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"

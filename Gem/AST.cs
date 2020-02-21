@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 using static Gem.Lexer;
 using static Gem.LexingUtil;
 
@@ -13,16 +14,46 @@ namespace Gem
     {
         public class Block
         {
+            public string Name = null;
             public List<List<Token>> Code = new List<List<Token>>();
             public List<Block> Children = new List<Block>();
+
+            public void Refresh()
+            {
+                if (Name == "__Script__")
+                {
+                    return;
+                }
+                if (Code.Any() && Code[0].Count >= 2 &&
+                    (Code[0][0].Name == "GLOBAL" ||
+                    Code[0][0].Name == "HIDDEN") &&
+                    Code[0][1].Name == "NAME")
+                {
+                    Name = Code[0][1].Value;
+                }
+                else
+                {
+                    Name = null;
+                }
+            }
         }
 
         private static List<Block> MoveBlocksA = new List<Block>();
         private static List<Block> MoveBlocksB = new List<Block>();
 
-        private static void Remove(Block block, Block main)
+        public static void Refresh(Block block)
         {
-            foreach (Block b in main.Children.ToList())
+            block.Refresh();
+            foreach (Block b in block.Children.ToList())
+            {
+                b.Refresh();
+                Refresh(b);
+            }
+        }
+
+        private static void Remove(Block block, ref Block main, Block parent)
+        {
+            foreach (Block b in parent.Children.ToList())
             {
                 if (b == block)
                 {
@@ -30,7 +61,7 @@ namespace Gem
                 }
                 else
                 {
-                    Remove(block, b);
+                    Remove(block, ref main, b);
                 }
             }
         }
@@ -39,11 +70,7 @@ namespace Gem
         {
             foreach (Block b in main.Children.ToList())
             {
-                if (b.Code.Any() && b.Code[0].Count >= 2 && 
-                    (b.Code[0][0].Name == "GLOBAL" || 
-                    b.Code[0][0].Name == "HIDDEN") &&
-                    b.Code[0][1].Name == "NAME" &&
-                    b.Code[0][1].Value == name)
+                if (b.Name == name)
                 {
                     return b;
                 }
@@ -64,6 +91,8 @@ namespace Gem
             string[] Src = File.ReadAllLines(args[0]);
             Src = Src.Select(ln => Regex.Replace(ln, @"\t", "    ")).ToArray();
             Block main = new Block();
+            main.Name = "__Script__";
+            Refresh(main);
             Console.WriteLine("...\n");
             List<string> Starts = new List<string>();
             List<string> Bodies = new List<string>();
@@ -186,6 +215,7 @@ namespace Gem
                     }
                 }
             }
+            Refresh(main);
             foreach (Block b in main.Children)
             {
                 for (int i = b.Code.Count - 1; i >= 0; i--)
@@ -205,14 +235,25 @@ namespace Gem
             int i1 = 0;
             foreach (Block A in MoveBlocksA)
             {
-                Remove(A, main);
+                Console.WriteLine(A.Name);
+                Remove(A, ref main, main);
                 MoveBlocksB[i1].Children.Add(A);
                 i1++;
             }
             MoveBlocksA.Clear();
             MoveBlocksB.Clear();
-            Console.WriteLine(string.Join("\n", main.Children.Select(b => string.Join
-            ("\n", b.Code.Select(l => string.Join(" ", l.Select(t => t.Value)))))));
+            Console.WriteLine(SerializeObject(main));
+        }
+
+        public static string SerializeObject<T>(this T toSerialize)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
+
+            using (StringWriter textWriter = new StringWriter())
+            {
+                xmlSerializer.Serialize(textWriter, toSerialize);
+                return textWriter.ToString();
+            }
         }
     }
 }

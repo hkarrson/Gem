@@ -1,0 +1,7 @@
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\bin\Debug\netcoreapp1.1\Gem.deps.json
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\bin\Debug\netcoreapp1.1\Gem.runtimeconfig.json
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\bin\Debug\netcoreapp1.1\Gem.runtimeconfig.dev.json
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\bin\Debug\netcoreapp1.1\Gem.dll
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\obj\Debug\netcoreapp1.1\Gem.csprojResolveAssemblyReference.cache
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\obj\Debug\netcoreapp1.1\Gem.csproj.CoreCompileInputs.cache
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\obj\Debug\netcoreapp1.1\Gem.AssemblyInfo.cs
