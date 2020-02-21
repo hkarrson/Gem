@@ -14,11 +14,18 @@ namespace Gem
             foreach (string Line in Src)
             {
                 LexingUtil.SetSource(Line);
+                LexingUtil.Add("COMMENT", @"\/\/.*");
                 LexingUtil.Add("STRING", @"\"".*\""");
                 LexingUtil.IgnoreSpaces();
                 LexingUtil.Add("GLOBAL", @"global");
                 LexingUtil.Add("HIDDEN", @"hidden");
                 LexingUtil.Add("END", @"end");
+                LexingUtil.Add("ASSIGNMENT_EQUALS", @"\=");
+                LexingUtil.Add("SEMI", @"\;");
+                LexingUtil.Add("LPAREN", @"\(");
+                LexingUtil.Add("RPAREN", @"\)");
+                LexingUtil.Add("COMMA", @"\,");
+                LexingUtil.Add("DOT", @"\.");
                 LexingUtil.Add("NAME", @"[a-zA-z_][a-zA-Z0-9_]*");
                 Tokens.AddRange(LexingUtil.Pop());
             }
