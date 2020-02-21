@@ -79,6 +79,7 @@ namespace Gem
         public class Token
         {
             public string Name, Value;
+            public List<Token> Children = new List<Token>();
         }
 
         public static List<Token> Pop()

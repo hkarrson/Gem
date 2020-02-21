@@ -1,24 +1,32 @@
-global User
+global App
 
-	hidden FullName = "John Q. Public";
+	global User
 
-	global User(FullName)
-		this.FullName = FullName;
+		hidden FullName = "John Q. Public";
+
+		global User(FullName)
+			this.FullName = FullName;
+		end
+		
+		global GetName()
+			return FullName.words[0];
+		end
+
 	end
-	
-	global GetName()
-		return FullName.words[0];
+
+	global PrintGreeting(To = User)
+		print("Good day, \To.GetName()!");
+	end
+
+	global Main()
+		// Print a greeting message to the default user
+		PrintGreeting();
+
+		// Print a greeting message to a new user
+		hidden Karrson = User("Karrson Heumann");
+		PrintGreeting(Karrson);
 	end
 
 end
 
-global PrintGreeting(To = User)
-	print("Good day, \To.GetName()!");
-end
-
-// Print a greeting message to the default user
-PrintGreeting();
-
-// Print a greeting message to a new user
-hidden Karrson = User("Karrson Heumann");
-PrintGreeting(Karrson);
+App.Main();
