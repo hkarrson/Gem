@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Gem
 {
@@ -6,7 +7,11 @@ namespace Gem
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            string[] Src = File.ReadAllLines(args[0]);
+            foreach (string Line in Src)
+            {
+                Console.WriteLine(Line);
+            }
             Console.ReadKey();
         }
     }
