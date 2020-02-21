@@ -11,42 +11,54 @@ namespace Gem
         private static string Src = "";
         private static Dictionary<int, string> Matches1 = new Dictionary<int, string>();
         private static Dictionary<int, string> Matches2 = new Dictionary<int, string>();
-        private static List<string> IgnorePatterns = new List<string>();
+        private static bool ignoreSpaces = false;
 
         public static void SetSource(string Src)
         {
-            IgnorePatterns.Clear();
+            ignoreSpaces = false;
             Matches1.Clear();
             Matches2.Clear();
             LexingUtil.Src = Src;
         }
 
-        public static void Ignore(string Pattern)
+        public static void IgnoreSpaces()
         {
-            IgnorePatterns.Add(Pattern);
+            ignoreSpaces = true;
         }
 
         public static void Add(string Name, string Pattern)
         {
-            List<string> Src1 = new List<string>();
-            Src1.Add(Src);
-            foreach (string p in IgnorePatterns)
+            foreach (Match m1 in Regex.Matches(Src, ignoreSpaces ? "[^" + @"\s+" + "]+" : ".+"))
             {
-                string[] Src3 = Src1.ToArray();
-                Src1.Clear();
-                foreach (string Src2 in Src3)
+                if (m1.Value.Length > 0)
                 {
-                    Src1.AddRange(Regex.Split(Src2, p).ToList());
-                }
-            }
-            foreach (string Src4 in Src1)
-            {
-                foreach (Match m in Regex.Matches(Src4, Pattern))
-                {
-                    if (!Matches1.ContainsKey(m.Index))
+                    foreach (Match m2 in Regex.Matches(m1.Value, Pattern))
                     {
-                        Matches1.Add(m.Index, m.Value);
-                        Matches2.Add(m.Index, Name);
+                        if (m2.Value.Length > 0)
+                        {
+                            int shift = 0;
+                            int pre = 0;
+                            bool add = true;
+                            foreach (KeyValuePair<int, string> m3 in Matches1)
+                            {
+                                pre = m3.Key;
+                                shift = m3.Key + m3.Value.Length;
+                                if (m1.Index + m2.Index < shift && m1.Index + m2.Index > pre)
+                                {
+                                    add = false;
+                                }
+                            }
+                            if (add)
+                            {
+                                if (!Matches1.ContainsKey(m1.Index + m2.Index))
+                                {
+                                    Matches1.Add(m1.Index + m2.Index, m2.Value);
+                                    Matches2.Add(m1.Index + m2.Index, Name);
+                                    pre = Matches1.Last().Key;
+                                    shift = Matches1.Last().Key + Matches1.Last().Value.Length;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -82,7 +94,7 @@ namespace Gem
             Src = "";
             Matches1.Clear();
             Matches2.Clear();
-            IgnorePatterns.Clear();
+            ignoreSpaces = false;
             return Lst;
         }
     }

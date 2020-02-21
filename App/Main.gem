@@ -1,6 +1,6 @@
 global User
 
-	hidden FullName = "John end Public";
+	hidden FullName = "John Q. Public";
 
 	global User(FullName)
 		this.FullName = FullName;

@@ -15,10 +15,11 @@ namespace Gem
             {
                 LexingUtil.SetSource(Line);
                 LexingUtil.Add("STRING", @"\"".*\""");
-                LexingUtil.Ignore(@"\s+");
+                LexingUtil.IgnoreSpaces();
                 LexingUtil.Add("GLOBAL", @"global");
                 LexingUtil.Add("HIDDEN", @"hidden");
                 LexingUtil.Add("END", @"end");
+                LexingUtil.Add("NAME", @"[a-zA-z_][a-zA-Z0-9_]*");
                 Tokens.AddRange(LexingUtil.Pop());
             }
             foreach (LexingUtil.Token Token in Tokens)
