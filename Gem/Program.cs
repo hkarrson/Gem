@@ -35,6 +35,7 @@ namespace Gem
             Src = Src.Select(ln => Regex.Replace(ln, @"\t", "    ")).ToArray();
             List<string> Starts = new List<string>();
             List<string> Bodies = new List<string>();
+            bool InBody = false;
             foreach (string Line in Src)
             {
                 List<LexingUtil.Token> Tokens = Lexer(Line);
@@ -43,8 +44,9 @@ namespace Gem
                     if ((Token.Name == "GLOBAL" || Token.Name == "HIDDEN") && !Tokens.Any(t => t.Name == "SEMI"))
                     {
                         Starts.Add(Line);
+                        InBody = true;
                     }
-                    if (Token.Name == "END")
+                    else if (Token.Name == "END")
                     {
                         string Start = Starts.Last();
                         Starts.RemoveAt(Starts.Count - 1);
@@ -82,10 +84,35 @@ namespace Gem
                         if (Body.Length > 0)
                         {
                             Bodies.Add(Regex.Replace(Body.Trim(), @"\r\n?|\n", Environment.NewLine));
-                            Console.WriteLine("---------------------------------------");
-                            Console.WriteLine(Body);
-                            Console.WriteLine("---------------------------------------\n");
+                            Bodies = Bodies.Distinct().ToList();
                         }
+                        int EndCount1 = Lexer(Body).Where(t => t.Name == "END").ToList().Count;
+                        if (EndCount1 > 1)
+                        {
+                            foreach (string Body1 in Bodies.ToList())
+                            {
+                                Body = Body.Replace(Body1, "token " + Lexer(Body1.Trim().Split(new char[] { '\n', '\r' },
+                                    StringSplitOptions.RemoveEmptyEntries)[0])[1].Value);
+                                Bodies.Add(Body);
+                                Bodies = Bodies.Distinct().ToList();
+                            }
+                            Bodies = Bodies.Distinct().ToList();
+                            Bodies = Bodies.Where(b => Lexer(b).Where(t => t.Name == "END").ToList().Count == 1).ToList();
+                            foreach (string Body2 in Bodies.ToList())
+                            {
+                                Console.WriteLine("---------------------------------------");
+                                Console.WriteLine(Body2);
+                                Console.WriteLine("---------------------------------------\n");
+                            }
+                        }
+                        InBody = false;
+                    }
+                    else if (Lexer(Line).Any(t => t.Name == "SEMI") && !InBody)
+                    {
+                        Console.WriteLine("---------------------------------------");
+                        Console.WriteLine(Line);
+                        Console.WriteLine("---------------------------------------\n");
+                        break;
                     }
                 }
             }
