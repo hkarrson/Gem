@@ -5,23 +5,73 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using static Gem.Lexer;
+using static Gem.LexingUtil;
 
 namespace Gem
 {
     public static class AST
     {
+        public class Block
+        {
+            public List<List<Token>> Code = new List<List<Token>>();
+            public List<Block> Children = new List<Block>();
+        }
+
+        private static List<Block> MoveBlocksA = new List<Block>();
+        private static List<Block> MoveBlocksB = new List<Block>();
+
+        private static void Remove(Block block, Block main)
+        {
+            foreach (Block b in main.Children.ToList())
+            {
+                if (b == block)
+                {
+                    main.Children.Remove(b);
+                }
+                else
+                {
+                    Remove(block, b);
+                }
+            }
+        }
+
+        private static Block Find(string name, Block main)
+        {
+            foreach (Block b in main.Children.ToList())
+            {
+                if (b.Code.Any() && b.Code[0].Count >= 2 && 
+                    (b.Code[0][0].Name == "GLOBAL" || 
+                    b.Code[0][0].Name == "HIDDEN") &&
+                    b.Code[0][1].Name == "NAME" &&
+                    b.Code[0][1].Value == name)
+                {
+                    return b;
+                }
+                else
+                {
+                    Block b1 = Find(name, b);
+                    if (b1 != null)
+                    {
+                        return b1;
+                    }
+                }
+            }
+            return null;
+        }
+
         public static void RunLexerAndGetSyntaxTree(string[] args)
         {
             string[] Src = File.ReadAllLines(args[0]);
             Src = Src.Select(ln => Regex.Replace(ln, @"\t", "    ")).ToArray();
+            Block main = new Block();
             Console.WriteLine("...\n");
             List<string> Starts = new List<string>();
             List<string> Bodies = new List<string>();
             bool InBody = false;
             foreach (string Line in Src)
             {
-                List<LexingUtil.Token> Tokens = Lex(Line);
-                foreach (LexingUtil.Token Token in Tokens)
+                List<Token> Tokens = Lex(Line);
+                foreach (Token Token in Tokens)
                 {
                     if ((Token.Name == "GLOBAL" || Token.Name == "HIDDEN") && !Tokens.Any(t => t.Name == "SEMI"))
                     {
@@ -82,37 +132,87 @@ namespace Gem
                             Bodies = Bodies.Where(b => Lex(b).Where(t => t.Name == "END").ToList().Count == 1).ToList();
                             foreach (string Body2 in Bodies.ToList())
                             {
+                                Block block = new Block();
                                 List<string> Lines = Body2.Split(new char[] { '\n', '\r' },
                                     StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToList();
                                 Lines.RemoveAll(l => l.Length <= 0);
                                 foreach (string ln in Lines)
                                 {
+                                    List<Token> tokens = new List<Token>();
                                     if (!ln.StartsWith(@"//"))
                                     {
-                                        foreach (LexingUtil.Token t in Lex(ln))
+                                        foreach (Token t in Lex(ln))
                                         {
                                             t.Print();
+                                            if (t.Name != "COMMENT")
+                                            {
+                                                tokens.Add(t);
+                                            }
                                         }
                                         Console.WriteLine("");
                                     }
+                                    if (tokens.Any())
+                                    {
+                                        block.Code.Add(tokens);
+                                    }
                                 }
                                 Console.WriteLine("\n...\n");
+                                main.Children.Add(block);
                             }
                         }
                         InBody = false;
                     }
                     else if (Lex(Line).Any(t => t.Name == "SEMI") && !InBody)
                     {
-                        foreach (LexingUtil.Token t in Lex(Line.Trim()))
+                        if (!Line.Trim().StartsWith(@"//"))
                         {
-                            t.Print();
+                            List<Token> tokens = new List<Token>();
+                            foreach (Token t in Lex(Line.Trim()))
+                            {
+                                if (t.Name != "COMMENT")
+                                {
+                                    t.Print();
+                                    tokens.Add(t);
+                                }
+                            }
+                            Console.WriteLine("");
+                            Console.WriteLine("\n...\n");
+                            if (tokens.Any())
+                            {
+                                main.Code.Add(tokens);
+                            }
                         }
-                        Console.WriteLine("");
-                        Console.WriteLine("\n...\n");
                         break;
                     }
                 }
             }
+            foreach (Block b in main.Children)
+            {
+                for (int i = b.Code.Count - 1; i >= 0; i--)
+                {
+                    List<Token> ln = b.Code[i];
+                    if (ln.Count == 2 && ln[0].Name == "TOKEN" && ln[1].Name == "NAME")
+                    {
+                        string name = ln[1].Value;
+                        Block MoveFrom = Find(name, main);
+                        Block MoveTo = b;
+                        MoveBlocksA.Add(MoveFrom);
+                        MoveBlocksB.Add(MoveTo);
+                        b.Code.RemoveAt(i);
+                    }
+                }
+            }
+            int i1 = 0;
+            foreach (Block A in MoveBlocksA)
+            {
+                Remove(A, main);
+                MoveBlocksB[i1].Children.Add(A);
+                i1++;
+            }
+            MoveBlocksA.Clear();
+            MoveBlocksB.Clear();
+            Console.WriteLine(string.Join("\n", main.Children.Select(b => string.Join
+            ("\n", b.Code.Select(l => string.Join(" ", l.Select(t => t.Value)))))));
         }
     }
 }
