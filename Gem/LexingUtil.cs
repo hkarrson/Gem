@@ -43,8 +43,11 @@ namespace Gem
             {
                 foreach (Match m in Regex.Matches(Src4, Pattern))
                 {
-                    Matches1.Add(m.Index, m.Value);
-                    Matches2.Add(m.Index, Name);
+                    if (!Matches1.ContainsKey(m.Index))
+                    {
+                        Matches1.Add(m.Index, m.Value);
+                        Matches2.Add(m.Index, Name);
+                    }
                 }
             }
             List<KeyValuePair<int, string>> Lst = Matches1.ToList().OrderBy(KVP => KVP.Key).ToList();
