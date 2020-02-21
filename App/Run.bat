@@ -1,4 +1,4 @@
 @echo off&setlocal
 for %%i in ("%~dp0..") do set "folder=%%~fi"
-python %folder%\Gem\Gem.py %~dp0Main.gem
+%folder%\Gem\bin\Debug\netcoreapp1.1\win10-x64\Gem.exe %~dp0Main.gem
 pause

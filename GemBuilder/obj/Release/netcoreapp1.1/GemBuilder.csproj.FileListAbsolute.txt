@@ -1,0 +1,10 @@
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\bin\Release\netcoreapp1.1\GemBuilder.deps.json
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\bin\Release\netcoreapp1.1\GemBuilder.runtimeconfig.json
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\bin\Release\netcoreapp1.1\GemBuilder.runtimeconfig.dev.json
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\bin\Release\netcoreapp1.1\GemBuilder.dll
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\bin\Release\netcoreapp1.1\GemBuilder.pdb
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\obj\Release\netcoreapp1.1\GemBuilder.csproj.CoreCompileInputs.cache
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\obj\Release\netcoreapp1.1\GemBuilder.AssemblyInfo.cs
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\obj\Release\netcoreapp1.1\GemBuilder.dll
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\obj\Release\netcoreapp1.1\GemBuilder.pdb
+C:\Users\mtheumann\Documents\GitHub\Gem\GemBuilder\obj\Release\netcoreapp1.1\GemBuilder.csprojResolveAssemblyReference.cache
