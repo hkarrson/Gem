@@ -4,10 +4,6 @@ global App
 
 		hidden FullName = "John Q. Public";
 
-		global User(FullName)
-			this.FullName = FullName;
-		end
-		
 		global GetName()
 			return FullName.words[0];
 		end

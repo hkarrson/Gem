@@ -11,6 +11,7 @@ namespace Gem
         private static string Src = "";
         private static Dictionary<int, string> Matches1 = new Dictionary<int, string>();
         private static Dictionary<int, string> Matches2 = new Dictionary<int, string>();
+        private static Dictionary<string, char> Chars = new Dictionary<string, char>();
         private static bool ignoreSpaces = false;
 
         public static void SetSource(string Src)
@@ -18,6 +19,7 @@ namespace Gem
             ignoreSpaces = false;
             Matches1.Clear();
             Matches2.Clear();
+            Chars.Clear();
             LexingUtil.Src = Src;
         }
 
@@ -28,6 +30,14 @@ namespace Gem
 
         public static void Add(string Name, string Pattern)
         {
+            try
+            {
+                Chars.Add(Name, (char)(Chars.Last().Value + (char)1));
+            }
+            catch
+            {
+                Chars.Add(Name, 'a');
+            }
             foreach (Match m1 in Regex.Matches(Src, ignoreSpaces ? "[^" + @"\s+" + "]+" : ".+"))
             {
                 if (m1.Value.Length > 0)
@@ -93,6 +103,10 @@ namespace Gem
                 Console.Write(Value);
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.Write("] ");
+            }
+            public char ToChar()
+            {
+                return Chars[Name];
             }
         }
 
