@@ -15,6 +15,21 @@ namespace Gem
         public class LineNode : List<LineNode>
         {
             public List<Token> LexedLine = new List<Token>();
+            public List<Token> LexedLineLossy
+            {
+                get
+                {
+                    List<Token> Lst = new List<Token>();
+                    foreach (Token t in LexedLine)
+                    {
+                        if (t.Name != "COMMENT")
+                        {
+                            Lst.Add(t);
+                        }
+                    }
+                    return Lst;
+                }
+            }
 
             public LineNode(List<Token> LexedLine)
             {
@@ -24,7 +39,7 @@ namespace Gem
             public LineNode() { }
         }
 
-        public static void RunLexerAndGetSyntaxTree(string[] args)
+        public static LineNode RunLexerAndGetSyntaxTree(string[] args)
         {
             string[] Src = File.ReadAllLines(args[0]);
             Src = Src.Select(ln => Regex.Replace(ln, @"\t", "    ")).ToArray();
@@ -51,18 +66,7 @@ namespace Gem
                 }
             }
             RootNode = PathStack[0];
-            Console.WriteLine(SerializeObject(RootNode[0].LexedLine));
-        }
-
-        public static string SerializeObject<T>(this T toSerialize)
-        {
-            XmlSerializer xmlSerializer = new XmlSerializer(toSerialize.GetType());
-
-            using (StringWriter textWriter = new StringWriter())
-            {
-                xmlSerializer.Serialize(textWriter, toSerialize);
-                return textWriter.ToString();
-            }
+            return RootNode;
         }
     }
 }

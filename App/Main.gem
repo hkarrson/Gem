@@ -4,6 +4,10 @@ global App
 
 		hidden FullName = "John Q. Public";
 
+		global User(FullName)
+			this.FullName = FullName;
+		end
+		
 		global GetName()
 			return FullName.words[0];
 		end
@@ -16,11 +20,11 @@ global App
 
 	global Main()
 		// Print a greeting message to the default user
-		PrintGreeting();
+		App.PrintGreeting();
 
 		// Print a greeting message to a new user
 		hidden Karrson = User("Karrson Heumann");
-		PrintGreeting(Karrson);
+		App.PrintGreeting(Karrson);		
 	end
 
 end
