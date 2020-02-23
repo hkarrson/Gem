@@ -6,6 +6,7 @@ global App
 
 		global User(FullName)
 			this.FullName = FullName;
+			bleep();
 		end
 		
 		global GetName()
@@ -20,11 +21,11 @@ global App
 
 	global Main()
 		// Print a greeting message to the default user
-		App.PrintGreeting();
-
+		PrintGreeting();
+		
 		// Print a greeting message to a new user
 		hidden Karrson = User("Karrson Heumann");
-		App.PrintGreeting(Karrson);		
+		PrintGreeting(Karrson);		
 	end
 
 end
