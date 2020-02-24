@@ -25,6 +25,7 @@ namespace GemCore
         public static void ExecFile(FileInfo fileInfo)
         {
             Console.Title = fileInfo.FullName;
+            Lexer.Lex(File.ReadAllText(fileInfo.FullName));
             Console.ReadKey();
         }
     }
