@@ -1,4 +1,6 @@
-﻿using System;
+﻿using sly.lexer;
+using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace GemCore
@@ -25,7 +27,14 @@ namespace GemCore
         public static void ExecFile(FileInfo fileInfo)
         {
             Console.Title = fileInfo.FullName;
-            Lexer.Lex(File.ReadAllText(fileInfo.FullName));
+            List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(File.ReadAllText(fileInfo.FullName));
+            if (Tokens != null)
+            {
+                foreach (Token<Lexer.LexerToken> Token in Tokens)
+                {
+                    Console.WriteLine(Token.ToString());
+                }
+            }
             Console.ReadKey();
         }
     }

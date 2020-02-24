@@ -1,47 +1,55 @@
-﻿using sly.lexer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
+using sly.lexer;
+using sly.buildresult;
 
 namespace GemCore
 {
     public class Lexer
     {
-        public enum Token
+        public enum LexerToken
         {
-            // float number 
+            [Lexeme(@""".+""")]
+            STRING = -10000,
+
+            [Lexeme("[a-zA-z_][a-zA-Z0-9_]*")]
+            NAME = -1000,
+
+            [Lexeme(@";")]
+            SEMI = -300,
+
+            [Lexeme(@"\.")]
+            DOT = -200,
+
+            [Lexeme(@"\=")]
+            EQUALS = -100,
+
             [Lexeme("[0-9]+\\.[0-9]+")]
             DOUBLE = 1,
-
-            // integer        
+    
             [Lexeme("[0-9]+")]
             INT = 3,
 
-            // the + operator
             [Lexeme("\\+")]
             PLUS = 4,
 
-            // the - operator
             [Lexeme("\\-")]
             MINUS = 5,
 
-            // the * operator
             [Lexeme("\\*")]
             TIMES = 6,
 
-            //  the  / operator
             [Lexeme("\\/")]
             DIVIDE = 7,
 
-            // a left paranthesis (
             [Lexeme("\\(")]
             LPAREN = 8,
 
-            // a right paranthesis )
             [Lexeme("\\)")]
             RPAREN = 9,
 
-            // a whitespace
             [Lexeme("[ \\t]+", true)]
             WS = 12,
 
@@ -49,10 +57,29 @@ namespace GemCore
             EOL = 14
         }
 
-        public static void Lex(string src)
+        public static List<Token<LexerToken>> Lex(string src)
         {
-            ILexer<Token> lexer = (ILexer<Token>)LexerBuilder.BuildLexer<Token>();
-            var tokens = lexer.Tokenize(src).Tokens;
+            BuildResult<ILexer<LexerToken>> lexer = LexerBuilder.BuildLexer<LexerToken>();
+            if (lexer.IsOk)
+            {
+                LexerResult<LexerToken> R = lexer.Result.Tokenize(src);
+                if (R.IsOk)
+                {
+                    return R.Tokens;
+                }
+                else
+                {
+                    Console.Error.WriteLine(R.Error.ErrorMessage);
+                }
+            }
+            else
+            {
+                foreach (InitializationError Error in lexer.Errors)
+                {
+                    Console.Error.WriteLine(Error.Message);
+                }
+            }
+            return null;
         }
     }
 }

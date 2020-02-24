@@ -5,4 +5,3 @@ C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemCore\obj\Debug\netstandard
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemCore\obj\Debug\netstandard2.0\GemCore.AssemblyInfo.cs
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemCore\obj\Debug\netstandard2.0\GemCore.dll
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemCore\obj\Debug\netstandard2.0\GemCore.pdb
-C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemCore\obj\Debug\netstandard2.0\GemCore.csprojAssemblyReference.cache
