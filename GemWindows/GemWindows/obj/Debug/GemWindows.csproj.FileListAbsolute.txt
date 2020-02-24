@@ -1,0 +1,9 @@
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\obj\Debug\GemWindows.csprojAssemblyReference.cache
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemWindows.exe.config
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemWindows.exe
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemWindows.pdb
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemCore.dll
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemCore.pdb
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\obj\Debug\GemWindows.csproj.CopyComplete
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\obj\Debug\GemWindows.exe
+C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\obj\Debug\GemWindows.pdb
