@@ -1,12 +1,12 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.1",
-    "signature": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+    "signature": ""
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v1.1": {
-      "gembuilder/1.0.0": {
+      "GemBuilder/1.0.0": {
         "runtime": {
           "GemBuilder.dll": {}
         }
@@ -14,7 +14,7 @@
     }
   },
   "libraries": {
-    "gembuilder/1.0.0": {
+    "GemBuilder/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

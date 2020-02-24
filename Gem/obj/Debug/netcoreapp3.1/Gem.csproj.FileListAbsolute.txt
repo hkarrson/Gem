@@ -1,0 +1,4 @@
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\bin\Debug\netcoreapp3.1\Gem.exe
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\obj\Debug\netcoreapp3.1\Gem.csprojAssemblyReference.cache
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\obj\Debug\netcoreapp3.1\Gem.AssemblyInfoInputs.cache
+C:\Users\mtheumann\Documents\GitHub\Gem\Gem\obj\Debug\netcoreapp3.1\Gem.AssemblyInfo.cs
