@@ -1,4 +1,5 @@
-﻿using sly.lexer;
+﻿using Jint;
+using sly.lexer;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,17 +25,37 @@ namespace GemCore
             if (fileInfo != null) ExecFile(fileInfo);
         }
 
+        public static void AppendToMethod(Engine engine, string FunctionName, string src)
+        {
+            engine.Execute(FunctionName + @" = (function() {
+            var cached_function = " + FunctionName + @";
+
+            return function() {
+                var result = cached_function.apply(this, arguments);
+
+                " + src + @"
+
+                return result;
+            };
+        })();");
+        }
+
         public static void ExecFile(FileInfo fileInfo)
         {
             Console.Title = fileInfo.FullName;
             List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(File.ReadAllText(fileInfo.FullName));
-            if (Tokens != null)
-            {
-                foreach (Token<Lexer.LexerToken> Token in Tokens)
-                {
-                    Console.WriteLine(Token.ToString());
-                }
-            }
+            var engine = new Engine().SetValue("log", new Action<object>(Console.WriteLine));
+            engine.Execute("function hello() { }");
+            AppendToMethod(engine, "hello", "log('Hello World!');");
+            AppendToMethod(engine, "hello", "log('Hello Gem!');");
+            engine.Execute("hello();");
+            //if (Tokens != null)
+            //{
+            //    foreach (Token<Lexer.LexerToken> Token in Tokens)
+            //    {
+            //        Console.WriteLine(Token.ToString());
+            //    }
+            //}
             Console.ReadKey();
         }
     }

@@ -43,6 +43,10 @@
       "frameworks": {
         "netstandard2.0": {
           "dependencies": {
+            "Jint": {
+              "target": "Package",
+              "version": "[2.11.58, )"
+            },
             "NETStandard.Library": {
               "suppressParent": "All",
               "target": "Package",
