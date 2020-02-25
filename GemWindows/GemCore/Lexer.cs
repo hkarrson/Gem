@@ -11,8 +11,26 @@ namespace GemCore
     {
         public enum LexerToken
         {
-            [Lexeme(@""".+""")]
-            STRING = -10000,
+            [Lexeme(@"(?s)\/\*.+\*\/", true)]
+            ML_COMMENT = -10000,
+
+            [Lexeme(@"\/{2,}.*", true, true)]
+            SL_COMMENT = 9900,
+
+            [Lexeme(@"""[^""]+""")]
+            STRING = -9000,
+
+            [Lexeme("return")]
+            RETURN = -5000,
+
+            [Lexeme("end")]
+            END = -4000,
+
+            [Lexeme("hidden")]
+            HIDDEN = -3000,
+
+            [Lexeme("global")]
+            GLOBAL = -2000,
 
             [Lexeme("[a-zA-z_][a-zA-Z0-9_]*")]
             NAME = -1000,
@@ -38,23 +56,29 @@ namespace GemCore
             [Lexeme("\\-")]
             MINUS = 5,
 
-            [Lexeme("\\*")]
+            [Lexeme("[^\\/]\\*[^\\/]")]
             TIMES = 6,
 
-            [Lexeme("\\/")]
+            [Lexeme(@"[^\/*][\/][^\/*]")]
             DIVIDE = 7,
 
             [Lexeme("\\(")]
-            LPAREN = 8,
+            LPAREN = 10,
 
             [Lexeme("\\)")]
-            RPAREN = 9,
+            RPAREN = 11,
+
+            [Lexeme("\\[")]
+            LBRACKET = 12,
+
+            [Lexeme("\\]")]
+            RBRACKET = 13,
 
             [Lexeme("[ \\t]+", true)]
-            WS = 12,
+            WS = 14,
 
-            [Lexeme("[\\n\\r]+", true, true)]
-            EOL = 14
+            [Lexeme("[\\n\\r]+", false, true)]
+            EOL = 15
         }
 
         public static List<Token<LexerToken>> Lex(string src)
