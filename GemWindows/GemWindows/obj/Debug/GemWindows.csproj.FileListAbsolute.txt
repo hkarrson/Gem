@@ -19,4 +19,3 @@ C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.M
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.Numerics.Vectors.xml
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.ValueTuple.xml
-C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\Jint.dll

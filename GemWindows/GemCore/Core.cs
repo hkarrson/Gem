@@ -1,13 +1,15 @@
-﻿using Jint;
-using sly.lexer;
+﻿using sly.lexer;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace GemCore
 {
     public static class Core
     {
+        public static string JS = "";
+
         public static void ExecFile(string Path)
         {
             FileInfo fileInfo = null;
@@ -25,37 +27,32 @@ namespace GemCore
             if (fileInfo != null) ExecFile(fileInfo);
         }
 
-        public static void AppendToMethod(Engine engine, string FunctionName, string src)
-        {
-            engine.Execute(FunctionName + @" = (function() {
-            var cached_function = " + FunctionName + @";
-
-            return function() {
-                var result = cached_function.apply(this, arguments);
-
-                " + src + @"
-
-                return result;
-            };
-        })();");
-        }
-
         public static void ExecFile(FileInfo fileInfo)
         {
             Console.Title = fileInfo.FullName;
             List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(File.ReadAllText(fileInfo.FullName));
-            var engine = new Engine().SetValue("log", new Action<object>(Console.WriteLine));
-            engine.Execute("function hello() { }");
-            AppendToMethod(engine, "hello", "log('Hello World!');");
-            AppendToMethod(engine, "hello", "log('Hello Gem!');");
-            engine.Execute("hello();");
-            //if (Tokens != null)
-            //{
-            //    foreach (Token<Lexer.LexerToken> Token in Tokens)
-            //    {
-            //        Console.WriteLine(Token.ToString());
-            //    }
-            //}
+            if (Tokens != null)
+            {
+                List<Token<Lexer.LexerToken>> Line = new List<Token<Lexer.LexerToken>>();
+                foreach (Token<Lexer.LexerToken> EOL in Tokens)
+                {
+                    Line.Add(EOL);
+                    if (EOL.TokenID == Lexer.LexerToken.EOL)
+                    {
+                        Line.RemoveAt(Line.Count - 1);
+                        if (!Line.Any(T => T.TokenID == Lexer.LexerToken.SEMI))
+                        {
+                            // Not a statement
+                        }
+                        else
+                        {
+                            // Statement groups
+                        }
+                        Line.Clear();
+                    }
+                }
+            }
+            Console.WriteLine(JS);
             Console.ReadKey();
         }
     }
