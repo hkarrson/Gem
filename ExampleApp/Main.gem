@@ -1,0 +1,33 @@
+public App
+
+	public User
+
+		hidden FullName = "John Q. Public";
+
+		public User(FullName)
+			this.FullName = FullName;
+			bleep();
+		end
+		
+		public GetName()
+			return FullName.words[0];
+		end
+
+	end
+
+	public PrintGreeting(To = User)
+		print("Good day, \To.GetName()!");
+	end
+
+	public Main()
+		// Print a greeting message to the default user
+		PrintGreeting();
+		
+		// Print a greeting message to a new user
+		hidden Karrson = User("Karrson Heumann");
+		PrintGreeting(Karrson);		
+	end
+
+end
+
+App.Main();
