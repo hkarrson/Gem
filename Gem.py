@@ -2,19 +2,14 @@ from sly import Lexer
 from sly import Parser
 
 class GemLexer(Lexer):
-    tokens = { ONENAME, NUMBER, STRING, IF, THEN, ELSE, FOR, PUBLIC, HIDDEN, RETURN, TO, EQEQ }
+    tokens = { ONENAME, NUMBER, STRING, PUBLIC, HIDDEN, RETURN, EQEQ }
     ignore = '\t '
 
     literals = { '=', '+', '-', '/', '*', '(', ')', '{', '}', '[', ']', ',', ';', '.' }
     
-    IF = r'if'
-    THEN = r'then'
-    ELSE = r'else'
-    FOR = r'for'
     PUBLIC = r'public'
     HIDDEN = r'hidden'
     RETURN = 'return'
-    TO = 'to'
     ONENAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
     STRING = r'\".*?\"'
     EQEQ = r'=='
@@ -67,10 +62,6 @@ class GemParser(Parser):
     @_('var_assign')
     def statement(self, p):
         return p.var_assign
-    
-    @_('FOR var_assign TO expr THEN block')
-    def statement(self, p):
-        return ('for', ('for_setup', p.var_assign, p.expr), p.block)
     
     @_('HIDDEN var_assign')
     def var_assign(self, p):
@@ -147,10 +138,6 @@ class GemParser(Parser):
     @_('PUBLIC name block')
     def statement(self, p):
         return ('fun_def', 'show_in_ide', p.name, p.block)
-    
-    @_('IF expr THEN block ELSE block')
-    def statement(self, p):
-        return ('if', p.IF, p.expr, ('branch', p.block0, p.ELSE, p.block1))
     
     @_('RETURN expr ";"')
     def statement(self, p):
