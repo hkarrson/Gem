@@ -8,7 +8,7 @@ public App
 
 		public User()
 		{
-			FullName = FullName;
+			this.FullName = FullName;
 			bleep();
 		}
 		
@@ -36,4 +36,4 @@ public App
 
 }
 
-Main();
+App.Main();

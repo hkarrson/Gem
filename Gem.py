@@ -2,7 +2,7 @@ from sly import Lexer
 from sly import Parser
 
 class GemLexer(Lexer):
-    tokens = { NAME, NUMBER, STRING, IF, THEN, ELSE, FOR, PUBLIC, HIDDEN, RETURN, TO, EQEQ }
+    tokens = { ONENAME, NUMBER, STRING, IF, THEN, ELSE, FOR, PUBLIC, HIDDEN, RETURN, TO, EQEQ }
     ignore = '\t '
 
     literals = { '=', '+', '-', '/', '*', '(', ')', '{', '}', '[', ']', ',', ';', '.' }
@@ -15,7 +15,7 @@ class GemLexer(Lexer):
     HIDDEN = r'hidden'
     RETURN = 'return'
     TO = 'to'
-    NAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
+    ONENAME = r'[a-zA-Z_][a-zA-Z0-9_]*'
     STRING = r'\".*?\"'
     EQEQ = r'=='
     
@@ -80,13 +80,21 @@ class GemParser(Parser):
     def var_assign(self, p):
         return ('var_assign', 'show_in_ide', p.var_assign)
     
-    @_('NAME "(" ")"')
-    def expr(self, p):
-        return ('fun_call', p.NAME)
+    @_('name "." ONENAME')
+    def name(self, p):
+        return ('name', p.name[1] + (p.ONENAME, '.'))
     
-    @_('NAME')
+    @_('ONENAME')
+    def name(self, p):
+        return ('name', (p.ONENAME, '.'))
+    
+    @_('name "(" ")"')
     def expr(self, p):
-        return ('var', p.NAME)
+        return ('fun_call', p.name)
+    
+    @_('name')
+    def expr(self, p):
+        return ('var', p.name)
     
     @_('NUMBER')
     def expr(self, p):
@@ -116,29 +124,29 @@ class GemParser(Parser):
     def expr(self, p):
         return ('eqeq', p.expr0, p.expr1)
     
-    @_('NAME "=" expr ";"')
+    @_('name "=" expr ";"')
     def var_assign(self, p):
-        return ('var_assign', 'basic', p.NAME, p.expr)
+        return ('var_assign', 'basic', p.name, p.expr)
     
-    @_('NAME "=" STRING ";"')
+    @_('name "=" STRING ";"')
     def var_assign(self, p):
-        return ('var_assign', 'basic', p.NAME, p.STRING)
+        return ('var_assign', 'basic', p.name, p.STRING)
     
-    @_('HIDDEN NAME "(" ")" block')
+    @_('HIDDEN name "(" ")" block')
     def statement(self, p):
-        return ('fun_def', 'hide_in_ide', p.NAME, p.block)
+        return ('fun_def', 'hide_in_ide', p.name, p.block)
     
-    @_('PUBLIC NAME "(" ")" block')
+    @_('PUBLIC name "(" ")" block')
     def statement(self, p):
-        return ('fun_def', 'show_in_ide', p.NAME, p.block)
+        return ('fun_def', 'show_in_ide', p.name, p.block)
     
-    @_('HIDDEN NAME block')
+    @_('HIDDEN name block')
     def statement(self, p):
-        return ('fun_def', 'hide_in_ide', p.NAME, p.block)
+        return ('fun_def', 'hide_in_ide', p.name, p.block)
     
-    @_('PUBLIC NAME block')
+    @_('PUBLIC name block')
     def statement(self, p):
-        return ('fun_def', 'show_in_ide', p.NAME, p.block)
+        return ('fun_def', 'show_in_ide', p.name, p.block)
     
     @_('IF expr THEN block ELSE block')
     def statement(self, p):
@@ -148,9 +156,9 @@ class GemParser(Parser):
     def statement(self, p):
         return ('return', p.expr)
     
-    @_('NAME "(" ")" ";"')
+    @_('name "(" ")" ";"')
     def statement(self, p):
-        return ('fun_call', p.NAME)
+        return ('fun_call', p.name)
     
 class GemExecute:
 
