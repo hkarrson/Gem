@@ -157,14 +157,56 @@ class GemExecute:
         if isinstance(result, str) and result[0] == '"':
             print(result)
 
+    def getNames(self, node, env):
+        if node[0] == 'fun_def':
+            name = node[2][1][0]
+            body = node[3][1][1]
+            env[name] = {'name': name, 'body': body}
+            for i in range(0, len(body), 2):
+                if (body[i][0] == 'fun_def'):
+                    child = self.getNames(body[i], env[name])  
+                    env[name][child['name']] = child              
+            return env[name]
+        return ['null']
+    
+    def walkTree(self, node):
+        if isinstance(node, int):
+            return node
+        elif isinstance(node, str):
+            return node
+        elif node is None or len(node) < 1:
+            return None
+        elif node[0] == 'main':
+            stmts = node[1][1]
+            self.env['MethodNameTree'] = {}
+            for i in range(0, len(stmts), 2):
+                self.getNames(stmts[i], self.env['MethodNameTree'] )
+            for i in range(0, len(stmts), 2):
+                self.walkTree(stmts[i])
+            return None
+        elif node[0] == 'statements':
+            stmts = node[1]
+            for i in range(0, len(stmts), 2):
+                self.walkTree(stmts[i])
+        elif node[0] == 'fun_call':
+            names = node[1][1]
+            namenode = self.env['MethodNameTree'][names[0]]
+            if (len(names) > 2):
+                for i in range(2, len(names), 2):
+                    namenode = namenode[names[i]]
+            print(namenode)
+        elif node[0] == 'fun_def':
+            return None
+        else:
+            print("Node not implemented: ", end = '')
+            print(node)
+            return None
+
 if __name__ == '__main__':
     lexer = GemLexer()
     parser = GemParser()
     env = {}
     with open('ExampleApp/Main.gem', 'r') as fp:
         src = fp.read()
-        for t in lexer.tokenize(src):
-            print(t)
         tree = parser.parse(lexer.tokenize(src))
-        print(tree)
-        #GemExecute(tree, env) 
+        GemExecute(tree, env) 
