@@ -6,22 +6,22 @@ public App
 	
 		hidden FullName = "John Q. Public";
 
-		public User()
+		public User(FullName)
 		{
-			FullName = FullName;
+			this.FullName = FullName;
 			bleep();
 		}
 		
 		public GetName()
 		{
-			return FullName;
+			return FullName.words[0];
 		}
 
 	}
 
-	public PrintGreeting()
+	public PrintGreeting(To = User)
 	{
-		print();
+		print("Good day, \To.GetName()!");
 	}
 
 	public Main()
@@ -30,10 +30,10 @@ public App
 		PrintGreeting();
 		
 		// Print a greeting message to a new user
-		hidden Karrson = User();
-		PrintGreeting();		
+		hidden Karrson = User("Karrson Heumann");
+		PrintGreeting(Karrson);		
 	}
 
 }
 
-Main();
+App.Main();
