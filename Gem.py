@@ -157,15 +157,21 @@ class GemExecute:
         if isinstance(result, str) and result[0] == '"':
             print(result)
 
-    def getNames(self, node, env):
+    Inits = []
+
+    def getNames(self, node, env, execute):
         if node[0] == 'fun_def':
             name = node[2][1][0]
             body = node[3][1][1]
-            env[name] = {'name': name, 'body': body}
+            if not execute: env[name] = {'name': name, 'body': body}
+            isClass = False
             for i in range(0, len(body), 2):
                 if (body[i][0] == 'fun_def'):
-                    child = self.getNames(body[i], env[name])  
-                    env[name][child['name']] = child              
+                    isClass = True
+                    child = self.getNames(body[i], env[name], execute)  
+                    if not execute: env[name][child['name']] = child
+            if isClass and execute:
+                self.Inits.append(body)
             return env[name]
         return ['null']
     
@@ -180,7 +186,14 @@ class GemExecute:
             stmts = node[1][1]
             self.env['MethodNameTree'] = {}
             for i in range(0, len(stmts), 2):
-                self.getNames(stmts[i], self.env['MethodNameTree'] )
+                self.getNames(stmts[i], self.env['MethodNameTree'], False)
+            for i in range(0, len(stmts), 2):
+                self.getNames(stmts[i], self.env['MethodNameTree'], True)
+            self.Inits.reverse()
+            for body in self.Inits:
+                for stmt in body:
+                    self.walkTree(stmt)
+            self.Inits = []
             for i in range(0, len(stmts), 2):
                 self.walkTree(stmts[i])
             return None
