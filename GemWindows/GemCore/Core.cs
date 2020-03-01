@@ -8,6 +8,8 @@ namespace GemCore
 {
     public static class Core
     {
+        static Engine engine = null;
+
         public static void ExecFile(string Path)
         {
             FileInfo fileInfo = null;
@@ -25,30 +27,35 @@ namespace GemCore
             if (fileInfo != null) ExecFile(fileInfo);
         }
 
-        public static void AppendToMethod(Engine engine, string FunctionName, string src)
+        private static void Reload(FileInfo fileInfo)
         {
-            engine.Execute(FunctionName + @" = (function() {
-            var cached_function = " + FunctionName + @";
-
-            return function() {
-                var result = cached_function.apply(this, arguments);
-
-                " + src + @"
-
-                return result;
-            };
-        })();");
+            var session = engine.Global.GetOwnProperties();
+            engine = null;
+            NewEngine(fileInfo);
+            foreach (var v in session)
+            {
+                engine.Global.FastSetProperty(v.Key, v.Value);
+            }
+            engine.Global.RemoveOwnProperty("Reloaded");
+            engine.Global.FastAddProperty("Reloaded", new Jint.Native.JsValue(true), true, true, true);
+            ExecFile(fileInfo, true);
         }
 
-        public static void ExecFile(FileInfo fileInfo)
+        private static void NewEngine(FileInfo fileInfo)
+        {
+            engine = new Engine();
+            engine.Global.FastAddProperty("Reloaded", new Jint.Native.JsValue(false), true, true, true);
+            engine = engine.SetValue("log", new Action<object>(Console.WriteLine));
+            engine = engine.SetValue("pause", new Action(() => { Console.ReadKey(); }));
+            engine = engine.SetValue("reload", new Action(() => { Reload(fileInfo); }));
+        }
+
+        public static void ExecFile(FileInfo fileInfo, bool Reload = false)
         {
             Console.Title = fileInfo.FullName;
-            List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(File.ReadAllText(fileInfo.FullName));
-            var engine = new Engine().SetValue("log", new Action<object>(Console.WriteLine));
-            engine.Execute("function hello() { }");
-            AppendToMethod(engine, "hello", "log('Hello World!');");
-            AppendToMethod(engine, "hello", "log('Hello Gem!');");
-            engine.Execute("hello();");
+            //List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(File.ReadAllText(fileInfo.FullName));
+            if (!Reload) NewEngine(fileInfo);
+            engine.Execute(File.ReadAllText(fileInfo.FullName.Replace(".gem", ".js")));
             //if (Tokens != null)
             //{
             //    foreach (Token<Lexer.LexerToken> Token in Tokens)
