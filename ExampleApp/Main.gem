@@ -27,13 +27,15 @@ public App
 	public Main()
 	{
 		// Print a greeting message to the default user
-		App.PrintGreeting();
+		PrintGreeting();
 		
 		// Print a greeting message to a new user
-		hidden Karrson = App.User.User();
-		App.PrintGreeting();		
+		hidden Karrson = User.User();
+		PrintGreeting();		
 	}
 
 }
+
+App.User.FullName = "hmm";
 
 App.Main();

@@ -158,20 +158,22 @@ class GemExecute:
             print(result)
 
     Inits = []
+    DoneInits = []
 
-    def getNames(self, node, env, execute):
+    def getNames(self, node, env, execute, strname = "", parent = None):
         if node[0] == 'fun_def':
             name = node[2][1][0]
+            strname = strname + name + "."
             body = node[3][1][1]
-            if not execute: env[name] = {'name': name, 'body': body}
+            if not execute: env[name] = {'name': name, 'body': body, 'parent': parent}
             isClass = False
             for i in range(0, len(body), 2):
                 if (body[i][0] == 'fun_def'):
                     isClass = True
-                    child = self.getNames(body[i], env[name], execute)  
+                    child = self.getNames(body[i], env[name], execute, strname, node)  
                     if not execute: env[name][child['name']] = child
             if isClass and execute:
-                self.Inits.append(body)
+                self.Inits.append([body, strname[:-1]])
             return env[name]
         return ['null']
     
@@ -191,9 +193,11 @@ class GemExecute:
                 self.getNames(stmts[i], self.env['MethodNameTree'], True)
             self.Inits.reverse()
             for body in self.Inits:
-                for stmt in body:
+                for stmt in body[0]:
                     self.walkTree(stmt)
+                self.DoneInits.append(body[1])
             self.Inits = []
+            print(self.DoneInits)
             for i in range(0, len(stmts), 2):
                 self.walkTree(stmts[i])
             return None
