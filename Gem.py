@@ -210,7 +210,9 @@ class GemExecute:
             name = ""
             try:
                 name += names[0] + "."
-                namenode = self.env['MethodNameTree'][names[0]]
+                parentnode = self.env['MethodNameTree']
+                
+                namenode = parentnode[names[0]]
                 if (len(names) > 2):
                     for i in range(2, len(names), 2):
                         name += names[i] + "."
