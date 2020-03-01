@@ -27,11 +27,11 @@ public App
 	public Main()
 	{
 		// Print a greeting message to the default user
-		PrintGreeting();
+		App.PrintGreeting();
 		
 		// Print a greeting message to a new user
-		hidden Karrson = User();
-		PrintGreeting();		
+		hidden Karrson = App.User.User();
+		App.PrintGreeting();		
 	}
 
 }

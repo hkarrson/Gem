@@ -190,11 +190,23 @@ class GemExecute:
                 self.walkTree(stmts[i])
         elif node[0] == 'fun_call':
             names = node[1][1]
-            namenode = self.env['MethodNameTree'][names[0]]
-            if (len(names) > 2):
-                for i in range(2, len(names), 2):
-                    namenode = namenode[names[i]]
-            print(namenode)
+            name = ""
+            try:
+                name += names[0] + "."
+                namenode = self.env['MethodNameTree'][names[0]]
+                if (len(names) > 2):
+                    for i in range(2, len(names), 2):
+                        name += names[i] + "."
+                        namenode = namenode[names[i]]
+                name = name[:-1]
+            except KeyError:
+                name = name[:-1]
+                print("Method does not exist: ", end = '')
+                print(name)
+                return None
+            body = namenode['body']
+            for stmt in body:
+                self.walkTree(stmt)
         elif node[0] == 'fun_def':
             return None
         else:
