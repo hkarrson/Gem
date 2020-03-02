@@ -1,7 +1,6 @@
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemWindows.exe.config
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemWindows.exe
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemWindows.pdb
-C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemCore.dll
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\Jint.dll
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\sly.dll
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.Buffers.dll
@@ -9,7 +8,6 @@ C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.M
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.Numerics.Vectors.dll
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.ValueTuple.dll
-C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\GemCore.pdb
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\sly.pdb
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.Buffers.xml
 C:\Users\mtheumann\Documents\GitHub\Gem\GemWindows\GemWindows\bin\Debug\System.Memory.xml

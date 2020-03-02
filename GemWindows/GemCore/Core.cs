@@ -45,6 +45,7 @@ namespace GemCore
 
         delegate Type GetTypeDelegate(string TypeName);
         delegate Assembly GetAssemblyDelegate(string AssemblyPath);
+        delegate dynamic ActivatorDelegate(Type type);
 
         private static void NewEngine(FileInfo fileInfo)
         {
@@ -54,6 +55,8 @@ namespace GemCore
             engine = engine.SetValue("DotNetType", getType);
             GetAssemblyDelegate getAssembly = Assembly.LoadFrom;
             engine = engine.SetValue("DotNetAsm", getAssembly);
+            ActivatorDelegate activatorDelegate = Activator.CreateInstance;
+            engine = engine.SetValue("DotNetNew", activatorDelegate);
             engine = engine.SetValue("reload", new Action(() => { Reload(fileInfo); }));
         }
 

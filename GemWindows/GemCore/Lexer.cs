@@ -20,6 +20,12 @@ namespace GemCore
             [Lexeme(@"""[^""]+""")]
             STRING = -9000,
 
+            [Lexeme("Object")]
+            OBJ = -7002,
+
+            [Lexeme("prototype")]
+            PROTO = -7001,
+
             [Lexeme("new")]
             NEW = -7000,
 

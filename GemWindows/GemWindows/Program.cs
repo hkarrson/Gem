@@ -12,8 +12,10 @@ namespace GemWindows
     {
         const string ExampleAppPath = "ExampleApp/Main.gem";
 
+        [STAThread]
         static void Main(string[] args)
         {
+            System.Windows.Forms.Application.EnableVisualStyles();
             if (args.Any())
                 Core.ExecFile(args[0]);
             else if (File.Exists(ExampleAppPath))
