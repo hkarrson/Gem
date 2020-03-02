@@ -20,6 +20,12 @@ namespace GemCore
             [Lexeme(@"""[^""]+""")]
             STRING = -9000,
 
+            [Lexeme("new")]
+            NEW = -7000,
+
+            [Lexeme("this")]
+            THIS = -6000,
+
             [Lexeme("return")]
             RETURN = -5000,
 
@@ -38,6 +44,27 @@ namespace GemCore
             [Lexeme(@"\.")]
             DOT = -200,
 
+            [Lexeme(@"\!\=")]
+            NOTEQ = -107,
+
+            [Lexeme(@"\!")]
+            NOT = -106,
+
+            [Lexeme(@"\&\&")]
+            AND = -105,
+
+            [Lexeme(@"\&")]
+            BITAND = -104,
+
+            [Lexeme(@"\|\|")]
+            OR = -103,
+
+            [Lexeme(@"\|")]
+            BITOR = -102,
+
+            [Lexeme(@"\=\=")]
+            EQEQ = -101,
+
             [Lexeme(@"\=")]
             EQUALS = -100,
 
@@ -45,43 +72,73 @@ namespace GemCore
             DOUBLE = 1,
     
             [Lexeme("[0-9]+")]
-            INT = 3,
+            INT = 2,
+
+            [Lexeme("\\+\\+")]
+            PLUSPLUS = 3,
 
             [Lexeme("\\+")]
             PLUS = 4,
 
+            [Lexeme("\\-\\-")]
+            MINUSMINUS = 5,
+
             [Lexeme("\\-")]
-            MINUS = 5,
+            MINUS = 6,
 
             [Lexeme("[^\\/]\\*[^\\/]")]
-            TIMES = 6,
+            TIMES = 7,
 
             [Lexeme(@"[^\/*][\/][^\/*]")]
-            DIVIDE = 7,
+            DIVIDE = 8,
+
+            [Lexeme("for")]
+            FOR = 9,
+
+            [Lexeme("while")]
+            WHILE = 10,
+
+            [Lexeme("if")]
+            IF = 11,
+
+            [Lexeme("else")]
+            ELSE = 12,
+
+            [Lexeme("\\<\\=")]
+            LESSTHANEQ = 90,
+
+            [Lexeme("\\<")]
+            LESSTHAN = 95,
+
+            [Lexeme("\\>\\=")]
+            GREATERTHANEQ = 100,
+
+            [Lexeme("\\>")]
+            GREATERTHAN = 105,
 
             [Lexeme("\\(")]
-            LPAREN = 10,
+            LPAREN = 110,
 
             [Lexeme("\\)")]
-            RPAREN = 11,
+            RPAREN = 120,
 
             [Lexeme("\\{")]
-            LBRACE = 12,
+            LBRACE = 130,
 
             [Lexeme("\\}")]
-            RBRACE = 13,
+            RBRACE = 140,
 
             [Lexeme("\\[")]
-            LBRACKET = 14,
+            LBRACKET = 150,
 
             [Lexeme("\\]")]
-            RBRACKET = 15,
+            RBRACKET = 160,
 
             [Lexeme("[ \\t]+", true)]
-            WS = 16,
+            WS = 170,
 
             [Lexeme("[\\n\\r]+", false, true)]
-            EOL = 17
+            EOL = 180
         }
 
         public static List<Token<LexerToken>> Lex(string src)

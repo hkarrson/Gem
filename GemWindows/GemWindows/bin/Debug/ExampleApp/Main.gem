@@ -1,39 +1,42 @@
+public DotNet
+{
+	public System
+	{
+		public Console = DotNetType("System.Console");
+		hidden FormsAsm = DotNetAsm("System.Windows.Forms.dll");
+	}
+}
+
 public App
 {
 
-	public User
+	public User(FullName)
 	{
-
-		hidden FullName = "John Q. Public";
-
-		public User(FullName)
-		{
-			this.FullName = FullName;
-			bleep();
-		}
+		hidden FullName = FullName;
 		
 		public GetName()
 		{
-			return FullName.words[0];
+			return this.FullName.split(" ")[0];
 		}
 
 	}
 
-	public PrintGreeting(To = User)
+	public PrintGreeting(To)
 	{
-		print("Good day, \To.GetName()!");
-	}
-
-	public Main()
-	{
-		// Print a greeting message to the default user
-		PrintGreeting();
-		
-		// Print a greeting message to a new user
-		hidden Karrson = User("Karrson Heumann");
-		PrintGreeting(Karrson);		
+		DotNet.System.Console.WriteLine("Good day, " + To.GetName() + "!");
 	}
 
 }
 
-App.Main();
+for (i = 10; i >= 0; i--)
+{
+	// Print a greeting message to a new user
+	hidden Karrson = new App.User("Karrson Heumann");
+	App.PrintGreeting(this.Karrson);
+	DotNet.System.Console.WriteLine(i);
+	if (i <= 4 && i > 1)
+	{
+		DotNet.System.Console.WriteLine("yo!");
+	}
+}
+DotNet.System.Console.WriteLine(DotNet.System.FormsAsm);
