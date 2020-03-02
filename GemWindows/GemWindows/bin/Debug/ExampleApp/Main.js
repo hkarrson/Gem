@@ -1,10 +1,14 @@
-function Test()
+this.App = function()
 {
-	pause();
-	reload();
+	this.Test = function()
+	{
+		pause();
+		reload();
+	}
 }
+this.__App__ = new this.App(); // App is a class; it contains methods
 
 log(Reloaded);
 log(blah);
 let blah = "blablablah!";
-Test();
+__App__.Test();

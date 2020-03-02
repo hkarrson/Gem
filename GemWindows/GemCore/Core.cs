@@ -53,16 +53,16 @@ namespace GemCore
         public static void ExecFile(FileInfo fileInfo, bool Reload = false)
         {
             Console.Title = fileInfo.FullName;
-            //List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(File.ReadAllText(fileInfo.FullName));
+            List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(File.ReadAllText(fileInfo.FullName));
             if (!Reload) NewEngine(fileInfo);
+            if (Tokens != null)
+            {
+                foreach (Token<Lexer.LexerToken> Token in Tokens)
+                {
+                    Console.WriteLine(Token.ToString());
+                }
+            }
             engine.Execute(File.ReadAllText(fileInfo.FullName.Replace(".gem", ".js")));
-            //if (Tokens != null)
-            //{
-            //    foreach (Token<Lexer.LexerToken> Token in Tokens)
-            //    {
-            //        Console.WriteLine(Token.ToString());
-            //    }
-            //}
             Console.ReadKey();
         }
     }

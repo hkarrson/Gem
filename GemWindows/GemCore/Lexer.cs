@@ -23,14 +23,11 @@ namespace GemCore
             [Lexeme("return")]
             RETURN = -5000,
 
-            [Lexeme("end")]
-            END = -4000,
-
             [Lexeme("hidden")]
             HIDDEN = -3000,
 
-            [Lexeme("global")]
-            GLOBAL = -2000,
+            [Lexeme("public")]
+            PUBLIC = -2000,
 
             [Lexeme("[a-zA-z_][a-zA-Z0-9_]*")]
             NAME = -1000,
@@ -68,17 +65,23 @@ namespace GemCore
             [Lexeme("\\)")]
             RPAREN = 11,
 
+            [Lexeme("\\{")]
+            LBRACE = 12,
+
+            [Lexeme("\\}")]
+            RBRACE = 13,
+
             [Lexeme("\\[")]
-            LBRACKET = 12,
+            LBRACKET = 14,
 
             [Lexeme("\\]")]
-            RBRACKET = 13,
+            RBRACKET = 15,
 
             [Lexeme("[ \\t]+", true)]
-            WS = 14,
+            WS = 16,
 
             [Lexeme("[\\n\\r]+", false, true)]
-            EOL = 15
+            EOL = 17
         }
 
         public static List<Token<LexerToken>> Lex(string src)
