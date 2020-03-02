@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace GemCore
 {
     public static class Core
     {
         static Engine engine = null;
+        static string GemFileName = null;
 
         public static void ExecFile(string Path)
         {
@@ -46,6 +48,12 @@ namespace GemCore
         delegate Type GetTypeDelegate(string TypeName);
         delegate Assembly GetAssemblyDelegate(string AssemblyPath);
         delegate dynamic ActivatorDelegate(Type type);
+        delegate dynamic GemFileDelegate(string GemFile);
+
+        private static object GemFile(string GemFile)
+        {
+            return engine.Global.Get("__" + GemFile.Replace(".", "_") + "__");
+        }
 
         private static void NewEngine(FileInfo fileInfo)
         {
@@ -57,6 +65,8 @@ namespace GemCore
             engine = engine.SetValue("DotNetAsm", getAssembly);
             ActivatorDelegate activatorDelegate = Activator.CreateInstance;
             engine = engine.SetValue("DotNetNew", activatorDelegate);
+            GemFileDelegate gemFile = GemFile;
+            engine = engine.SetValue("GemFile", gemFile);
             engine = engine.SetValue("reload", new Action(() => { Reload(fileInfo); }));
         }
 
@@ -64,101 +74,71 @@ namespace GemCore
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(fileInfo.FullName));
             Console.Title = fileInfo.FullName;
-            List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(File.ReadAllText(fileInfo.FullName) + Environment.NewLine);
+            List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(Regex.Replace(File.ReadAllText(fileInfo.FullName), @"(?s)[\n\r]+\t+", " ") + Environment.NewLine);
             if (!Reload) NewEngine(fileInfo);
-            string JS = "";
-            List<string> MethodNames = new List<string>();
-            bool SkipNames = false;
+            int i = 0;
             if (Tokens != null)
             {
                 List<Token<Lexer.LexerToken>> Line = new List<Token<Lexer.LexerToken>>();
                 foreach (Token<Lexer.LexerToken> EOL in Tokens)
                 {
-                    if (EOL.TokenID != Lexer.LexerToken.EOL)
+                    if (EOL.TokenID != Lexer.LexerToken.EOL && !EOL.Value.Contains("\n") && !EOL.Value.Contains("\r"))
                     {
                         Line.Add(EOL);
                     }
                     else
                     {
-                        int i = 0;
-                        foreach (Token<Lexer.LexerToken> Token in Line)
+                        string JS = "";
+                        if (i == 0)
                         {
-                            if (Token.TokenID == Lexer.LexerToken.LPAREN || Token.TokenID == Lexer.LexerToken.EQUALS)
+                            foreach (Token<Lexer.LexerToken> Token in Line)
                             {
-                                SkipNames = false;
-                            }
-                            if (Token.TokenID == Lexer.LexerToken.PUBLIC || Token.TokenID == Lexer.LexerToken.HIDDEN)
-                            {
-                                if (Line.Count > i + 1)
+                                if (Token.TokenID == Lexer.LexerToken.JS)
                                 {
-                                    if (Line[i + 1].TokenID == Lexer.LexerToken.NAME)
+                                    GemFileName = Token.Value;
+                                    GemFileName = "__" + GemFileName.Replace(".", "_") + "__";
+                                    if (!Reload)
                                     {
-                                        if ((Line.Count > i + 2 && Line[i + 2].TokenID == Lexer.LexerToken.LPAREN) || i + 2 >= Line.Count)
-                                        {
-                                            if (Line.Count > i + 2 && Line[i + 2].TokenID == Lexer.LexerToken.LPAREN)
-                                            {
-                                                MethodNames.Add(Line[i + 1].Value + "(");
-                                            }
-                                            else
-                                            {
-                                                MethodNames.Add(Line[i + 1].Value + "{");
-                                            }
-                                            JS += "this." + MethodNames.Last().Substring(0, MethodNames.Last().Length - 1) + " = function";
-                                            if (i + 2 >= Line.Count)
-                                            {
-                                                JS += "()";
-                                            }
-                                            SkipNames = true;
-                                        }
-                                        else
-                                        {
-                                            JS += "this.__" + Line[i + 1].Value + "__";
-                                            SkipNames = true;
-                                        }
+                                        JS = GemFileName + " = {};" + Environment.NewLine;
                                     }
+                                    engine.Execute(JS);
+                                    JS = "";
+                                    break;
                                 }
                             }
-                            else if (!SkipNames && Token.TokenID == Lexer.LexerToken.NAME)
+                        }
+                        else
+                        {
+                            if (Line[0].TokenID == Lexer.LexerToken.HIDDEN || Line[0].TokenID == Lexer.LexerToken.PUBLIC)
                             {
-                                if (i + 1 < Line.Count && Line[i + 1].TokenID != Lexer.LexerToken.LPAREN && Token.TokenID == Lexer.LexerToken.NAME)
+                                JS += GemFileName + ".";
+                            }
+                            foreach (Token<Lexer.LexerToken> Token in Line)
+                            {
+                                if (Token.TokenID == Lexer.LexerToken.THIS)
                                 {
-                                    JS += "__" + Token.Value + "__" + " ";
+                                    JS += @"GemFile(""" + GemFileName.Replace("_", " ").Trim().Replace(" ", ".") + @""").";
                                 }
-                                else
+                                else if (Token.TokenID == Lexer.LexerToken.JS)
                                 {
                                     JS += Token.Value + " ";
                                 }
+                                else if (Token.TokenID == Lexer.LexerToken.ARROW)
+                                {
+                                    JS += "{ ";
+                                }
                             }
-                            else if (Token.TokenID != Lexer.LexerToken.NAME)
+                            if (Line.Any(t => t.TokenID == Lexer.LexerToken.ARROW))
                             {
-                                JS += Token.Value + " ";
-                                if (Token.TokenID == Lexer.LexerToken.LBRACE)
-                                {
-                                    SkipNames = false;
-                                }
-                                else if (Token.TokenID == Lexer.LexerToken.RBRACE)
-                                {
-                                    if (MethodNames.Any())
-                                    {
-                                        JS += Environment.NewLine;
-                                        string Name = MethodNames.Last().Substring(0, MethodNames.Last().Length - 1);
-                                        if (MethodNames.Last().EndsWith("{"))
-                                        {
-                                            JS += "this.__" + Name + "__ = new this." + Name + "();";
-                                        }
-                                        MethodNames.RemoveAt(MethodNames.Count - 1);
-                                    }
-                                }
+                                JS += "}";
                             }
-                            i++;
+                            engine.Execute(JS);
                         }
                         Line.Clear();
+                        i++;
                     }
-                    JS += Environment.NewLine;
                 }
             }
-            //Console.WriteLine(JS);
-            engine.Execute(JS);
             Console.ReadKey();
         }
     }

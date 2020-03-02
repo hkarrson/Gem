@@ -1,54 +1,43 @@
-public DotNet
-{
-	public System
+hidden GemExample.Main
+
+public Console = DotNetType("System.Console");
+
+    if (!Reloaded)
 	{
-		public Console = DotNetType("System.Console");
-		public Windows
-		{
-			public Forms
+		public $Output = "";
+	}
+
+public Write = function(s) -> $Console.Write(s); $Output += "RESET: " + s;
+public WriteLine = function(s) -> $Console.WriteLine(s); $Output += "RESET: " + s + "\n";
+public User = function(FullName) -> return { "FullName": FullName, "FirstName": FullName.split(" ")[0], 
+	"LastName": FullName.split(" ")[FullName.split(" ").length - 1]};
+
+    if (!Reloaded)
+	{
+		$Write("Please enter your full name and press enter to start the program: ");
+		hidden $FullName = $Console.ReadLine();
+		hidden $NewUser = $User($FullName);
+		$WriteLine("");
+		$WriteLine("Hi, " + $NewUser.FullName + "!");
+		$WriteLine($NewUser.FirstName + ", welcome to Gem!");
+		$WriteLine("I'm sure the " + $NewUser.LastName + " family will endorse your adventures using this language!");
+		$Write("Please, enter a number: ");
+		hidden $Num = $Console.ReadLine();
+		$Num = parseInt($Num, 10);
+
+			for (i = 0; i < $Num; i++)
 			{
-				public Form = DotNetType("System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
-				public Application = DotNetType("System.Windows.Forms.Application, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
-				public Label = DotNetType("System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+				$WriteLine(i);
 			}
-		}
-	}
-}
-
-public App
-{
-
-	public User(FullName)
-	{
-		hidden FullName = FullName;
 		
-		public GetName()
-		{
-			return this.FullName.split(" ")[0];
-		}
-
 	}
-
-	public PrintGreeting(To)
+	else
 	{
-		DotNet.System.Console.WriteLine("Good day, " + To.GetName() + "!");
+		$Console.Clear();
+		$Console.WriteLine($Output);
 	}
 
-}
+$WriteLine("PAUSE");
+$Console.ReadKey();
 
-for (i = 10; i >= 0; i--)
-{
-	// Print a greeting message to a new user
-	hidden Karrson = new App.User("Karrson Heumann");
-	App.PrintGreeting(this.Karrson);
-	DotNet.System.Console.WriteLine(i);
-	if (i <= 4 && i > 1)
-	{
-		DotNet.System.Console.WriteLine("yo!");
-	}
-}
-
-public MainForm = DotNetNew(DotNet.System.Windows.Forms.Form);
-//MainForm.Controls.Add(DotNetNew(DotNet.System.Windows.Forms.Label))
-
-DotNet.System.Windows.Forms.Application.Run(MainForm);
+reload();
