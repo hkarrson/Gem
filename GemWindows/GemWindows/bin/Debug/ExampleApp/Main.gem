@@ -1,17 +1,14 @@
 hidden GemExample.Main
 
-public Console = DotNetType("System.Console");
+public Console = %Gem%.Console;
 
-    if (!Reloaded)
-	{
-		public $Output = "";
-	}
-
-public Write = function(s) -> $Console.Write(s); $Output += "RESET: " + s;
-public WriteLine = function(s) -> $Console.WriteLine(s); $Output += "RESET: " + s + "\n";
-public User = function(FullName) -> return { "FullName": FullName, "FirstName": FullName.split(" ")[0], 
+public Write = function(s) -> $Console.Write(s);
+public WriteLine = function(s) -> $Console.WriteLine(s);
+\
+	public User = function(FullName) -> return { "FullName": FullName, "FirstName": FullName.split(" ")[0], 
 	"LastName": FullName.split(" ")[FullName.split(" ").length - 1]};
-
+\
+\
     if (!Reloaded)
 	{
 		$Write("Please enter your full name and press enter to start the program: ");
@@ -24,19 +21,12 @@ public User = function(FullName) -> return { "FullName": FullName, "FirstName": 
 		$Write("Please, enter a number: ");
 		hidden $Num = $Console.ReadLine();
 		$Num = parseInt($Num, 10);
-
-			for (i = 0; i < $Num; i++)
-			{
-				$WriteLine(i);
-			}
-		
+		for (i = 0; i < $Num; i++)
+		{
+			$WriteLine(i);
+		}	
 	}
-	else
-	{
-		$Console.Clear();
-		$Console.WriteLine($Output);
-	}
-
+\
 $WriteLine("PAUSE");
 $Console.ReadKey();
 

@@ -23,14 +23,17 @@ namespace GemCore
             [Lexeme("\\$")]
             THIS = 3,
 
+            [Lexeme("\\%")]
+            GemFile = 4,
+
             [Lexeme("[ \\t]+", true)]
-            WS = 4,
+            WS = 5,
 
             [Lexeme("[\\n\\r]+", false, true)]
-            EOL = 5,
+            EOL = 6,
 
-            [Lexeme("[^\\s\\$]+")]
-            JS = 6,
+            [Lexeme("[^\\s\\$\\%]+")]
+            JS = 7,
         }
 
         public static List<Token<LexerToken>> Lex(string src)

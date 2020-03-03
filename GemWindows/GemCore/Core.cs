@@ -59,6 +59,7 @@ namespace GemCore
         {
             engine = new Engine();
             engine.Global.FastAddProperty("Reloaded", new Jint.Native.JsValue(false), true, true, true);
+            engine.Global.FastAddProperty("IsMain", new Jint.Native.JsValue(false), true, true, true);
             GetTypeDelegate getType = Type.GetType;
             engine = engine.SetValue("DotNetType", getType);
             GetAssemblyDelegate getAssembly = Assembly.LoadFrom;
@@ -70,72 +71,133 @@ namespace GemCore
             engine = engine.SetValue("reload", new Action(() => { Reload(fileInfo); }));
         }
 
+        public static List<string> ParsePathEnvironmentVariable()
+        {
+            List<string> Lst = new List<string>();
+            string originalPathEnv = Environment.GetEnvironmentVariable("PATH");
+            string[] paths = originalPathEnv.Split(new char[1] { Path.PathSeparator });
+            foreach (string s in paths)
+            {
+                string pathEnv = Environment.ExpandEnvironmentVariables(s);
+                if (pathEnv.Length > 0)
+                {
+                    if (Directory.Exists(pathEnv))
+                    {
+                        foreach (string fn in Directory.GetFiles(pathEnv))
+                        {
+                            Lst.Add(fn);
+                        }
+                    }
+                }
+            }
+            return Lst;
+        }
+
         public static void ExecFile(FileInfo fileInfo, bool Reload = false)
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(fileInfo.FullName));
             Console.Title = fileInfo.FullName;
-            List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(Regex.Replace(File.ReadAllText(fileInfo.FullName), @"(?s)[\n\r]+\t+", " ") + Environment.NewLine);
             if (!Reload) NewEngine(fileInfo);
-            int i = 0;
-            if (Tokens != null)
+            List<string> Lst = new List<string>();
+            Lst.AddRange(ParsePathEnvironmentVariable());
+            Lst.Add(fileInfo.FullName);
+            Lst = Lst.Where(fn => fn.ToLower().EndsWith(".gem")).ToList();
+            foreach (string fn in Lst)
             {
-                List<Token<Lexer.LexerToken>> Line = new List<Token<Lexer.LexerToken>>();
-                foreach (Token<Lexer.LexerToken> EOL in Tokens)
+                if (fn == Lst.Last())
                 {
-                    if (EOL.TokenID != Lexer.LexerToken.EOL && !EOL.Value.Contains("\n") && !EOL.Value.Contains("\r"))
+                    engine.Global.RemoveOwnProperty("IsMain");
+                    engine.Global.FastAddProperty("IsMain", new Jint.Native.JsValue(true), true, true, true);
+                }
+                string src = "";
+                int x = 0;
+                foreach (string m in Regex.Split(File.ReadAllText(fn), @"^\\$", RegexOptions.Multiline))
+                {
+                    if (x % 2 == 0)
                     {
-                        Line.Add(EOL);
+                        src += m + Environment.NewLine;
                     }
                     else
                     {
-                        string JS = "";
-                        if (i == 0)
+                        src += m.Replace("\n", " ").Replace("\r", " ") + Environment.NewLine;
+                    }
+                    x++;
+                }
+                List<Token<Lexer.LexerToken>> Tokens = Lexer.Lex(src);
+                bool InGemFile = false;
+                int i = 0;
+                if (Tokens != null)
+                {
+                    List<Token<Lexer.LexerToken>> Line = new List<Token<Lexer.LexerToken>>();
+                    foreach (Token<Lexer.LexerToken> EOL in Tokens)
+                    {
+                        if (EOL.TokenID != Lexer.LexerToken.EOL && !EOL.Value.Contains("\n") && !EOL.Value.Contains("\r"))
                         {
-                            foreach (Token<Lexer.LexerToken> Token in Line)
-                            {
-                                if (Token.TokenID == Lexer.LexerToken.JS)
-                                {
-                                    GemFileName = Token.Value;
-                                    GemFileName = "__" + GemFileName.Replace(".", "_") + "__";
-                                    if (!Reload)
-                                    {
-                                        JS = GemFileName + " = {};" + Environment.NewLine;
-                                    }
-                                    engine.Execute(JS);
-                                    JS = "";
-                                    break;
-                                }
-                            }
+                            Line.Add(EOL);
                         }
                         else
                         {
-                            if (Line[0].TokenID == Lexer.LexerToken.HIDDEN || Line[0].TokenID == Lexer.LexerToken.PUBLIC)
+                            string JS = "";
+                            if (i == 0)
                             {
-                                JS += GemFileName + ".";
+                                foreach (Token<Lexer.LexerToken> Token in Line)
+                                {
+                                    if (Token.TokenID == Lexer.LexerToken.JS)
+                                    {
+                                        GemFileName = Token.Value;
+                                        GemFileName = "__" + GemFileName.Replace(".", "_") + "__";
+                                        if (!Reload)
+                                        {
+                                            JS = GemFileName + " = {};" + Environment.NewLine;
+                                        }
+                                        engine.Execute(JS);
+                                        JS = "";
+                                        break;
+                                    }
+                                }
                             }
-                            foreach (Token<Lexer.LexerToken> Token in Line)
+                            else
                             {
-                                if (Token.TokenID == Lexer.LexerToken.THIS)
+                                if (Line[0].TokenID == Lexer.LexerToken.HIDDEN || Line[0].TokenID == Lexer.LexerToken.PUBLIC)
                                 {
-                                    JS += @"GemFile(""" + GemFileName.Replace("_", " ").Trim().Replace(" ", ".") + @""").";
+                                    JS += GemFileName + ".";
                                 }
-                                else if (Token.TokenID == Lexer.LexerToken.JS)
+                                foreach (Token<Lexer.LexerToken> Token in Line)
                                 {
-                                    JS += Token.Value + " ";
+                                    if (Token.TokenID == Lexer.LexerToken.THIS)
+                                    {
+                                        JS += @"GemFile(""" + GemFileName.Replace("_", " ").Trim().Replace(" ", ".") + @""").";
+                                    }
+                                    if (Token.TokenID == Lexer.LexerToken.GemFile)
+                                    {
+                                        InGemFile ^= true;
+                                        if (InGemFile)
+                                        {
+                                            JS += @"GemFile(""";
+                                        }
+                                        else
+                                        {
+                                            JS = JS.Substring(0, JS.Length - 1) + @""")";
+                                        }
+                                    }
+                                    else if (Token.TokenID == Lexer.LexerToken.JS)
+                                    {
+                                        JS += Token.Value + " ";
+                                    }
+                                    else if (Token.TokenID == Lexer.LexerToken.ARROW)
+                                    {
+                                        JS += "{ ";
+                                    }
                                 }
-                                else if (Token.TokenID == Lexer.LexerToken.ARROW)
+                                if (Line.Any(t => t.TokenID == Lexer.LexerToken.ARROW))
                                 {
-                                    JS += "{ ";
+                                    JS += "}";
                                 }
+                                engine.Execute(JS);
                             }
-                            if (Line.Any(t => t.TokenID == Lexer.LexerToken.ARROW))
-                            {
-                                JS += "}";
-                            }
-                            engine.Execute(JS);
+                            Line.Clear();
+                            i++;
                         }
-                        Line.Clear();
-                        i++;
                     }
                 }
             }
