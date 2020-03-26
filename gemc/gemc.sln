@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29509.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gemc", "gemc\gemc.csproj", "{DA55EAA0-AF76-4C5D-BA9E-99C4FE679797}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DA55EAA0-AF76-4C5D-BA9E-99C4FE679797}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA55EAA0-AF76-4C5D-BA9E-99C4FE679797}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA55EAA0-AF76-4C5D-BA9E-99C4FE679797}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA55EAA0-AF76-4C5D-BA9E-99C4FE679797}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3DB61923-D71B-4F10-A1BE-8FEAE2D07782}
+	EndGlobalSection
+EndGlobal
