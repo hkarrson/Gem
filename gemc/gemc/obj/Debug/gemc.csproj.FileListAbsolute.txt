@@ -4,3 +4,6 @@ C:\Users\mtheumann\Documents\GitHub\Gem\gemc\gemc\bin\Debug\gemc.pdb
 C:\Users\mtheumann\Documents\GitHub\Gem\gemc\gemc\obj\Debug\gemc.csprojAssemblyReference.cache
 C:\Users\mtheumann\Documents\GitHub\Gem\gemc\gemc\obj\Debug\gemc.exe
 C:\Users\mtheumann\Documents\GitHub\Gem\gemc\gemc\obj\Debug\gemc.pdb
+C:\Users\mtheumann\Documents\GitHub\Gem\gemc\gemc\bin\Debug\gemctools.dll
+C:\Users\mtheumann\Documents\GitHub\Gem\gemc\gemc\bin\Debug\gemctools.pdb
+C:\Users\mtheumann\Documents\GitHub\Gem\gemc\gemc\obj\Debug\gemc.csproj.CopyComplete

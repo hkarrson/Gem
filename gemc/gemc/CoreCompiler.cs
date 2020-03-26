@@ -8,10 +8,11 @@ namespace gemc
 {
     public static class CoreCompiler
     {
-        public static void Compile(string GemPath, string ILasm)
+        public static int Compile(string GemPath, string ILasm)
         {
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Error.WriteLine("Failed to compile '" + GemPath + "' - Compiler not yet implemented.");
+            return -1;
         }
     }
 }

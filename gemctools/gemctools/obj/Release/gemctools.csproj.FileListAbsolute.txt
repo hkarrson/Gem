@@ -1,0 +1,5 @@
+C:\Users\mtheumann\Documents\GitHub\Gem\gemctools\gemctools\obj\Release\gemctools.csprojAssemblyReference.cache
+C:\Users\mtheumann\Documents\GitHub\Gem\gemctools\gemctools\bin\Release\gemctools.dll
+C:\Users\mtheumann\Documents\GitHub\Gem\gemctools\gemctools\bin\Release\gemctools.pdb
+C:\Users\mtheumann\Documents\GitHub\Gem\gemctools\gemctools\obj\Release\gemctools.dll
+C:\Users\mtheumann\Documents\GitHub\Gem\gemctools\gemctools\obj\Release\gemctools.pdb
