@@ -47,7 +47,7 @@ namespace gemc
                     Console.WriteLine();
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.BackgroundColor = ConsoleColor.Black;
-                    Console.WriteLine("Gem Compiler v1.0.0");
+                    Console.WriteLine("Gem Compiler v0.0.1");
                     Console.WriteLine("-------------------");
                     Console.WriteLine();
                     if (args.Length != 1)
