@@ -1,0 +1,24 @@
+Filemode cs
+{
+	namespace gemc
+	{
+		using System;
+		using System.Collections;
+		using System.Collections.Generic;
+		using System.IO;
+		using System.Linq;
+		using System.Text;
+		using System.Threading.Tasks;
+		using gemctools;
+		class Program
+		{
+			static void Main(string[] args)
+			{
+				CompilerFactory.TryCreateNew("0.0.4");
+				CoreCompiler.Compile
+					(CompilerFactory.GetGemPath(),
+					CompilerFactory.GetCSC());
+			}
+		}
+	}
+}

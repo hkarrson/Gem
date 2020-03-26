@@ -13,7 +13,10 @@ namespace gemc
     {
         static void Main(string[] args)
         {
-            CompilerFactory.CreateNew(CoreCompiler.Compile, "0.0.2");
+            CompilerFactory.TryCreateNew("0.0.3");
+            CoreCompiler.Compile
+                (CompilerFactory.GetGemPath(),
+                CompilerFactory.GetCSC());
         }
     }
 }

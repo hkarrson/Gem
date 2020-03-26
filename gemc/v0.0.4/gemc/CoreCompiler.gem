@@ -1,0 +1,25 @@
+Filemode cs
+{
+	namespace gemc
+	{
+		using System;
+		using System.Collections.Generic;
+		using System.Diagnostics;
+		using System.IO;
+		using System.Linq;
+		using System.Text;
+		using System.Text.RegularExpressions;
+		using System.Threading.Tasks;
+		using gemctools;
+		public static class CoreCompiler
+		{
+			public static int Compile(string GemPath, string CSC)
+			{
+				return gemctools.Helpers.StartProcess
+				(gemctools.Helpers.GetFromParent
+				("v0.0.3", @"gemc\gemc\bin\Debug\gemc.exe"), 
+				@"""" + GemPath + @"""" + " !!!");
+			}
+		}
+	}
+}

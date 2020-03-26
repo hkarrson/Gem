@@ -10,14 +10,32 @@ namespace gemctools
 {
     public class CompilerFactory
     {
-        public delegate int CoreCompiler(string GemPath, string ILasm);
+        private static string GemPath;
+        private static string CSC;
 
-        public static void CreateNew(CoreCompiler Core, string Version)
+        public static string GetGemPath()
         {
-            int ret = -1;
+            return GemPath;
+        }
+
+        public static string GetCSC()
+        {
+            return CSC;
+        }
+
+        public static void TryCreateNew(string Version)
+        {
             List<string> Lst = Environment.GetCommandLineArgs().ToList();
             Lst.RemoveAt(0);
             string[] args = Lst.ToArray();
+            bool Silent = false;
+            if (args.Contains("!!!"))
+            {
+                List<string> Args = args.ToList();
+                Args.RemoveAll(a => a == "!!!");
+                args = Args.ToArray();
+                Silent = true;
+            }
             string MonoBin = null;
             IDictionary environmentVariables = Environment.GetEnvironmentVariables();
             foreach (DictionaryEntry de in environmentVariables)
@@ -38,24 +56,30 @@ namespace gemctools
             ConsoleColor cb = Console.BackgroundColor;
             if (!string.IsNullOrWhiteSpace(MonoBin))
             {
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.BackgroundColor = ConsoleColor.Green;
-                Console.WriteLine("Found Mono Bin @ " + MonoBin);
-                string ILasm = Path.Combine(MonoBin, "ILasm.bat");
-                if (File.Exists(ILasm))
+                if (!Silent)
                 {
-                    Console.WriteLine("Found IL Assembler @ " + ILasm);
-                    Console.WriteLine();
-                    Console.ForegroundColor = cf;
-                    Console.BackgroundColor = cb;
-                    Console.WriteLine("Mono> gemc " + string.Join(" ", args));
-                    Console.WriteLine();
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.WriteLine("Gem Compiler " + Version);
-                    Console.WriteLine("-------------------");
-                    Console.WriteLine();
+                    Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.BackgroundColor = ConsoleColor.Green;
+                    Console.WriteLine("Found Mono Bin @ " + MonoBin);
+                }
+                string CSC = Path.Combine(MonoBin, "csc.bat");
+                if (File.Exists(CSC))
+                {
+                    if (!Silent)
+                    {
+                        Console.WriteLine("Found C# Compiler @ " + CSC);
+                        Console.WriteLine();
+                        Console.ForegroundColor = cf;
+                        Console.BackgroundColor = cb;
+                        Console.WriteLine("Mono> gemc " + string.Join(" ", args));
+                        Console.WriteLine();
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.WriteLine("Gem Compiler " + Version);
+                        Console.WriteLine("-------------------");
+                        Console.WriteLine();
+                    }
                     if (args.Length != 1)
                     {
                         if (args.Length < 1)
@@ -74,14 +98,20 @@ namespace gemctools
                             Console.ForegroundColor = cf;
                         }
                     }
-                    else
-                    {
+                    else                    {
                         if (args[0].ToLower().EndsWith(".gem"))
                         {
                             if (File.Exists(args[0]))
                             {
-                                Console.WriteLine("Attempting to compile '" + args[0] + "' and it's dependencies...");
-                                ret = Core(args[0], ILasm);
+                                if (!Silent)
+                                {
+                                    Console.WriteLine("Attempting to transpile '" + args[0] + "' and it's dependencies... \nWill compile to binary afterwards...");
+                                }
+                                GemPath = args[0];
+                                CompilerFactory.CSC = CSC;
+                                Console.ForegroundColor = cf;
+                                Console.BackgroundColor = cb;
+                                return;
                             }
                             else
                             {
@@ -105,7 +135,7 @@ namespace gemctools
                 {
                     Console.BackgroundColor = cb;
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.Error.WriteLine("Error: Could not find IL Assembler @ " + ILasm);
+                    Console.Error.WriteLine("Error: Could not find C# Compiler @ " + CSC);
                     Console.ForegroundColor = cf;
                 }
             }
@@ -117,7 +147,7 @@ namespace gemctools
             }
             Console.ForegroundColor = cf;
             Console.BackgroundColor = cb;
-            Environment.Exit(ret);
+            Environment.Exit(-1);
         }
     }
 }
