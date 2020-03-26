@@ -75,6 +75,7 @@ namespace gemc
                             if (File.Exists(args[0]))
                             {
                                 Console.WriteLine("Attempting to compile '" + args[0] + "' and it's dependencies...");
+                                CoreCompiler.Compile(args[0], ILasm);
                             }
                             else
                             {
